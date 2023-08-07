@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 
-export default function Square() {
-
-  const [squareValue, setSquareValue] = useState("O");
-
-  const changeSquareValue = () => setSquareValue(squareValue === "O" ? "X" : "O");
- 
+export default function Square(props) {
   return (
-    <input value={squareValue} type="button" onClick={() => changeSquareValue()} />
+    <input type="button" value={props.label} onClick={(e) => props.whenClicked(e)} />
   );
 }
