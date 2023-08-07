@@ -1,0 +1,15 @@
+#root {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  height: min(50vw, 50vh);
+  width: min(50vw, 50vh);
+}
+
+#root > .squareBtn {
+  flex: 1 1 33%;
+  height: min(16.6vw, 16.6vh);
+  width: min(16.6vw, 16.6vh);
+  font-size: 4rem;
+}
