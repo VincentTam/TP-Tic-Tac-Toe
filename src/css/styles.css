@@ -1,4 +1,4 @@
-#root {
+.board {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -11,7 +11,7 @@
   transform: translate(-50%, -50%);
 }
 
-#root > .squareBtn {
+.squareBtn {
   flex: 1 1 33%;
   height: min(16.6vw, 16.6vh);
   width: min(16.6vw, 16.6vh);
