@@ -6,7 +6,8 @@ export default function Board(props) {
   return (
     <>
       {props.squares.map((value, id) => (
-        <Square key={id} value={value} whenClicked={() => props.whenSquareClicked(id)} />
+        <Square key={id} value={value} whenClicked={() => props.whenSquareClicked(id)}
+          boardSize={props.boardSize} relativeSize={props.relativeSize} />
       ))}
     </>
   );
