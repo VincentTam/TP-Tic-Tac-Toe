@@ -4,24 +4,21 @@ import Square from "./Square";
 
 // needs root element
 export default function Board() {
-  const createInitialBoard = () => {
-    [...Array(9).keys()].map(v => ({id: v, label: "O"}))
-  };
+  const boardSize = 3;
+  const createInitialBoard =
+    () => Array(Math.pow(boardSize, 2)).fill("X");
   const [squares, setSquares] = useState(() => createInitialBoard());
 
-  const changeSquareValue = clickedSquare => {
-    setSquares(squares.map(sqaure => {
-      sqaure.id === clickedSquare.id ? clickedSquare : sqaure
-    }));
+  const changeSquareValue = (clickedSquareId, str) => {
+    setSquares(squares.map((value, id) => id === clickedSquareId ? str : value));
   };
-
   const X2O = str => str === "X" ? "O" : "X";
 
   return (
     <>
-      {squares.map(square => (
-        <Square key={square.id} value={square.label}
-          whenClicked={s => changeSquareValue({...s, label: X2O(e.target.value)})} />
+      {squares.map((value, id) => (
+        <Square key={id} value={value}
+          whenClicked={e => changeSquareValue(id, X2O(e.target.value))} />
       ))}
     </>
   );
