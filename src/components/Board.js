@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 import Square from "./Square";
 
-// needs root element
 export default function Board() {
   const boardSize = 3;
   const createInitialBoard =
