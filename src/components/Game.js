@@ -17,7 +17,7 @@ export default function Game() {
   ]);
   const [xIsNext, setXIsNext] = useState(true);
   const [viewStep, setViewStep] = useState(0);
-  const curSquares = () => [...squaresHistory.slice(-1)[0].squares];
+  const curSquares = () => [...squaresHistory[viewStep].squares];
 
   function getWinPos() {
     const linesToCheck = [
@@ -59,7 +59,7 @@ export default function Game() {
       return;
     }
     setSquaresHistory([
-      ...squaresHistory,
+      ...squaresHistory.slice(0, viewStep + 1),
       {
         squares: squares.map((value, id) =>
           id === clickedSquareId ? (xIsNext ? "X" : "O") : value
@@ -72,6 +72,11 @@ export default function Game() {
     setViewStep(x => x + 1);
   };
 
+  const stepButtonHandler = (clickedBtnId) => {
+    setViewStep(clickedBtnId);
+    setXIsNext(clickedBtnId % 2 === 0);
+  };
+
   const Steps = () =>
     squaresHistory.map((move, id) => {
       const xOrO = id & 1 ? "X" : "O";
@@ -81,7 +86,8 @@ export default function Game() {
         id === viewStep ? "step-btn step-btn-hl" : "step-btn";
       return (
         <li key={id}>
-          <input type="button" value={buttonValue} className={buttonClasses} />
+          <input type="button" value={buttonValue} className={buttonClasses}
+            onClick={() => stepButtonHandler(id)}/>
         </li>
       );
     });
@@ -98,7 +104,7 @@ export default function Game() {
           <Board
             boardSize={boardSize}
             relativeSize={relativeSize}
-            squares={curSquares()}
+            squares={squaresHistory[viewStep].squares}
             whenSquareClicked={fillSquare}
           />
         </div>
