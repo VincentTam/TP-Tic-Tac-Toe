@@ -8,11 +8,15 @@ export default function Game() {
   const boardSize = 4;
   const relativeSize = 50; // min(?vw, ?vh)
   const boardWidth = `min(${relativeSize}vw, ${relativeSize}vh)`;
-  const [squaresHistory, setSquaresHistory] = useState(
-    [Array(Math.pow(boardSize, 2)).fill(null)]
-  );
+  const [squaresHistory, setSquaresHistory] = useState([
+    {
+      squares: Array(Math.pow(boardSize, 2)).fill(null),
+      playedRow: -1,
+      playedCol: -1
+    }
+  ]);
   const [xIsNext, setXIsNext] = useState(true);
-  const curSquares = () => [...squaresHistory.slice(-1)[0]];
+  const curSquares = () => [...squaresHistory.slice(-1)[0].squares];
 
   function getWinPos() {
     const linesToCheck = [
@@ -53,29 +57,54 @@ export default function Game() {
     if (squares[clickedSquareId] || getWinPos().length != 0) {
       return;
     }
-    setSquaresHistory(
-      squaresHistory.toSpliced(-1, 1,
-        squares.map((value, id) =>
+    setSquaresHistory([
+      ...squaresHistory,
+      {
+        squares: squares.map((value, id) =>
           id === clickedSquareId ? (xIsNext ? "X" : "O") : value
-      ))
-    );
+        ),
+        playedRow: Math.floor(clickedSquareId / boardSize) + 1,
+        playedCol: clickedSquareId % boardSize + 1
+      }
+    ]);
     setXIsNext(!xIsNext);
   };
 
+  const Steps = () =>
+    squaresHistory.map((move, id) => {
+      const xOrO = id & 1 ? "X" : "O";
+      const buttonValue =
+        id ? `${xOrO} : [C]${move.playedCol} - [L]${move.playedRow}` : "Début";
+      return (
+        <li key={id}>
+          <input type="button" value={buttonValue} className="step-btn" />
+        </li>
+      );
+    });
+
   return (
-    <div
-      className="board"
-      style={{
-        width: boardWidth,
-        height: boardWidth
-        }}>
-      <Board
-        boardSize={boardSize}
-        relativeSize={relativeSize}
-        squares={curSquares()}
-        whenSquareClicked={fillSquare}
-      />
-      <p>{getStatus()}</p>
+    <div className="flex-row">
+      <div className="flex-column-wrap">
+        <div className="board"
+          style={{
+            width: boardWidth,
+            height: boardWidth,
+          }}
+        >
+          <Board
+            boardSize={boardSize}
+            relativeSize={relativeSize}
+            squares={curSquares()}
+            whenSquareClicked={fillSquare}
+          />
+        </div>
+        <div className="status-line">{getStatus()}</div>
+      </div>
+      <div>
+        <ol start={0}>
+          <Steps />
+        </ol>
+      </div>
     </div>
   );
 }
