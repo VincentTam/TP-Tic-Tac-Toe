@@ -8,10 +8,11 @@ export default function Game() {
   const boardSize = 4;
   const relativeSize = 50; // min(?vw, ?vh)
   const boardWidth = `min(${relativeSize}vw, ${relativeSize}vh)`;
-  const [squares, setSquares] = useState(
-    Array(Math.pow(boardSize, 2)).fill(null)
+  const [squaresHistory, setSquaresHistory] = useState(
+    [Array(Math.pow(boardSize, 2)).fill(null)]
   );
   const [xIsNext, setXIsNext] = useState(true);
+  const curSquares = () => [...squaresHistory.slice(-1)[0]];
 
   function getWinPos() {
     const linesToCheck = [
@@ -28,6 +29,7 @@ export default function Game() {
       [...Array(boardSize).keys()].map((i) => (i + 1) * (boardSize - 1)),
     ];
     for (const line of linesToCheck) {
+      const squares = curSquares();
       if (
         squares[line[0]] &&
         line.every((value, id, array) => squares[value] === squares[array[0]])
@@ -39,6 +41,7 @@ export default function Game() {
   }
 
   const getStatus = () => {
+    const squares = curSquares();
     const winner = squares[getWinPos()[0]];
     return winner ? `Vainqueur ${winner}` :
       squares.indexOf(null) === -1 ? "Match nul !" :
@@ -46,13 +49,15 @@ export default function Game() {
   };
 
   const fillSquare = (clickedSquareId) => {
+    const squares = curSquares();
     if (squares[clickedSquareId] || getWinPos().length != 0) {
       return;
     }
-    setSquares(
-      squares.map((value, id) =>
-        id === clickedSquareId ? (xIsNext ? "X" : "O") : value
-      )
+    setSquaresHistory(
+      squaresHistory.toSpliced(-1, 1,
+        squares.map((value, id) =>
+          id === clickedSquareId ? (xIsNext ? "X" : "O") : value
+      ))
     );
     setXIsNext(!xIsNext);
   };
@@ -67,7 +72,7 @@ export default function Game() {
       <Board
         boardSize={boardSize}
         relativeSize={relativeSize}
-        squares={squares}
+        squares={curSquares()}
         whenSquareClicked={fillSquare}
       />
       <p>{getStatus()}</p>
