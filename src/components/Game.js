@@ -104,7 +104,7 @@ export default function Game() {
           <Board
             boardSize={boardSize}
             relativeSize={relativeSize}
-            squares={squaresHistory[viewStep].squares}
+            squares={curSquares()}
             whenSquareClicked={fillSquare}
           />
         </div>
