@@ -16,6 +16,7 @@ export default function Game() {
     }
   ]);
   const [xIsNext, setXIsNext] = useState(true);
+  const [viewStep, setViewStep] = useState(0);
   const curSquares = () => [...squaresHistory.slice(-1)[0].squares];
 
   function getWinPos() {
@@ -67,7 +68,8 @@ export default function Game() {
         playedCol: clickedSquareId % boardSize + 1
       }
     ]);
-    setXIsNext(!xIsNext);
+    setXIsNext(x => !x);
+    setViewStep(x => x + 1);
   };
 
   const Steps = () =>
@@ -75,9 +77,11 @@ export default function Game() {
       const xOrO = id & 1 ? "X" : "O";
       const buttonValue =
         id ? `${xOrO} : [C]${move.playedCol} - [L]${move.playedRow}` : "Début";
+      const buttonClasses =
+        id === viewStep ? "step-btn step-btn-hl" : "step-btn";
       return (
         <li key={id}>
-          <input type="button" value={buttonValue} className="step-btn" />
+          <input type="button" value={buttonValue} className={buttonClasses} />
         </li>
       );
     });
