@@ -135,6 +135,7 @@ export default function Game() {
             squares={curSquares()}
             whenSquareClicked={fillSquare}
             fontSize={fontSize}
+            winPos={getWinPos()}
           />
         </div>
         <div>
