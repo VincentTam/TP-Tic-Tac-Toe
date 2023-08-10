@@ -27,7 +27,7 @@
 
 .game-form input:not(input[type="submit"]) {
   margin: 1rem;
-  width: 2rem;
+  width: 2.5rem;
 }
 
 .step-btn {
