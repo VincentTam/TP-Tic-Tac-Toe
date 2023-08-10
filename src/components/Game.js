@@ -43,7 +43,7 @@ export default function Game() {
           arrL.map(k => (i+(k-s)*v[0])*N+(j+(k-s)*v[1]))
         )
     );
-    
+
     for (const line of linesToCheck) {  // use for loop to exit fct in case of match
       const squares = curSquares();
       if (
@@ -98,7 +98,7 @@ export default function Game() {
       return (
         <li key={id}>
           <input type="button" value={buttonValue} className={buttonClasses}
-            onClick={() => stepButtonHandler(id)}/>
+            onClick={() => stepButtonHandler(id)} />
         </li>
       );
     });
