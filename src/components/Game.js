@@ -5,11 +5,12 @@ import Board from "./Board";
 import "../css/styles.css";
 
 export default function Game() {
+  const MAX_BOARD_SIZE = 30;
   const [boardSize, setBoardSize] = useState(10);
   const [winLength, setWinLength] = useState(5);
   const relativeSize = 80; // min(?vw, ?vh)
   const boardWidth = `min(${relativeSize}vw, ${relativeSize}vh)`;
-  const fontCoeff = .9;
+  const fontCoeff = .9; // ratio between font size and square size
   const fontSize =
     `min(${relativeSize/boardSize*fontCoeff}vw, ${relativeSize/boardSize*fontCoeff}vh)`;
   const [squaresHistory, setSquaresHistory] = useState([
@@ -143,11 +144,11 @@ export default function Game() {
           <form onSubmit={changeBoardDim} className="game-form">
             <label>
               Taille du tableau :
-              <input type="number" name="boardSize" defaultValue={boardSize} min={0} max={100} />
+              <input type="number" name="boardSize" defaultValue={boardSize} min={2} max={MAX_BOARD_SIZE} />
             </label>
             <label>
               Longueur pour gagner :
-              <input type="number" name="winLength" defaultValue={winLength} min={0} max={100} />
+              <input type="number" name="winLength" defaultValue={winLength} min={2} max={MAX_BOARD_SIZE} />
             </label>
             <input type="submit" value="Envoyer" />
           </form>
