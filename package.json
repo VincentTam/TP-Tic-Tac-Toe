@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack serve --hot --open --mode development --port 3001",
+    "start": "webpack serve --hot --open-app-name firefox --mode development --port 3001",
     "build-linux": "webpack --config webpack.config.js --mode production && cp -v ./public/pictures ./dist/pictures",
     "build-windows": "webpack --config webpack.config.js --mode production && xcopy .\\public\\pictures .\\dist\\pictures /s /e /i"
   },
