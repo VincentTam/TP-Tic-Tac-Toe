@@ -5,13 +5,13 @@ import Board from "./Board";
 import "../css/styles.css";
 
 export default function Game() {
-  const boardSize = 4;
-  const relativeSize = 50; // min(?vw, ?vh)
+  const boardSize = 10;
+  const relativeSize = 80; // min(?vw, ?vh)
   const boardWidth = `min(${relativeSize}vw, ${relativeSize}vh)`;
   const [squaresHistory, setSquaresHistory] = useState([
     {
       squares: Array(Math.pow(boardSize, 2)).fill(null),
-      playedRow: -1,
+      playedRow: -1,  // 1-based index
       playedCol: -1
     }
   ]);
@@ -19,21 +19,27 @@ export default function Game() {
   const [viewStep, setViewStep] = useState(0);
   const curSquares = () => [...squaresHistory[viewStep].squares];
 
+  // check only lines touching last played grid
+  const vs = [[0,1],[1,0],[1,1],[1,-1]];  // "check directions"
+  const N = boardSize;
+  const n = 5;  // match length
+  const l = Math.min(n, N);  // var for unifying cases when n > N and n <= N
+  const arrL = [...Array(l).keys()];  // shorthand for [0,...,l-1]
   function getWinPos() {
-    const linesToCheck = [
-      // add each row's index in "squares" array
-      ...[...Array(boardSize).keys()].map((i) =>
-        [...Array(boardSize).keys()].map((j) => i * boardSize + j)
-      ),
-      // add each column's index in "squares" array
-      ...[...Array(boardSize).keys()].map((j) =>
-        [...Array(boardSize).keys()].map((i) => i * boardSize + j)
-      ),
-      // add each diagonal's index in "squares" array
-      [...Array(boardSize).keys()].map((i) => i * (boardSize + 1)),
-      [...Array(boardSize).keys()].map((i) => (i + 1) * (boardSize - 1)),
-    ];
-    for (const line of linesToCheck) {
+    const [i, j] = [squaresHistory[viewStep].playedRow - 1,
+      squaresHistory[viewStep].playedCol - 1];  // "center" of checking (0-based index)
+    if (i < 0) return [];  // return empty array if user clicked "Début"
+
+    const linesToCheck = vs.flatMap(v =>  // for each "check direction"
+      arrL.filter(s =>  // for each "check line offset", verify boundary conditions
+        i-s*v[0]>=0 && i-s*v[0]<N && j-s*v[1]>=0 && j-s*v[1]<N &&  // 0<=chkLine start<N
+        i+(l-s-1)*v[0]>=0 && i+(l-s-1)*v[0]<N && j+(l-s-1)*v[1]>=0 && j+(l-s-1)*v[1]<N)
+        .map(s =>  // get "check line" (an array of indice (from 0 to N²)) from offset
+          arrL.map(k => (i+(k-s)*v[0])*N+(j+(k-s)*v[1]))
+        )
+    );
+    
+    for (const line of linesToCheck) {  // use for loop to exit fct in case of match
       const squares = curSquares();
       if (
         squares[line[0]] &&
@@ -42,7 +48,7 @@ export default function Game() {
         return line;
       }
     }
-    return [];
+    return [];  // no matches
   }
 
   const getStatus = () => {
@@ -81,7 +87,7 @@ export default function Game() {
     squaresHistory.map((move, id) => {
       const xOrO = id & 1 ? "X" : "O";
       const buttonValue =
-        id ? `${xOrO} : [C]${move.playedCol} - [L]${move.playedRow}` : "Début";
+        id ? `${xOrO} : [L]${move.playedRow} - [C]${move.playedCol}` : "Début";
       const buttonClasses =
         id === viewStep ? "step-btn step-btn-hl" : "step-btn";
       return (
