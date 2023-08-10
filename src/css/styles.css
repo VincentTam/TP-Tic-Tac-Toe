@@ -1,19 +1,13 @@
 .board {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  row-gap: 0;
   align-items: center;
   justify-content: center;
   margin: 1rem;
-  /* height: min(50vw, 50vh); */
-  /* width: min(50vw, 50vh); */
-  /* center the board */
 }
 
 .squareBtn {
-  /* flex: 1 1 33%; */
-  /* height: min(16.6vw, 16.6vh); */
-  /* width: min(16.6vw, 16.6vh); */
-  font-size: 3rem;
+  aspect-ratio: 1 / 1;
   font-weight: bold;
   background: #fff;
   border: 1px solid #999;
@@ -27,6 +21,11 @@
   margin: 1rem;
   font-weight: bolder;
   font-size: 1.1rem;
+}
+
+.game-form input:not(input[type="submit"]) {
+  margin: 1rem;
+  width: 2rem;
 }
 
 .step-btn {

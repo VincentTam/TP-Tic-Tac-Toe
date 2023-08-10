@@ -5,9 +5,13 @@ import Board from "./Board";
 import "../css/styles.css";
 
 export default function Game() {
-  const boardSize = 10;
+  const [boardSize, setBoardSize] = useState(10);
+  const [winLength, setWinLength] = useState(5);
   const relativeSize = 80; // min(?vw, ?vh)
   const boardWidth = `min(${relativeSize}vw, ${relativeSize}vh)`;
+  const fontCoeff = .9;
+  const fontSize =
+    `min(${relativeSize/boardSize*fontCoeff}vw, ${relativeSize/boardSize*fontCoeff}vh)`;
   const [squaresHistory, setSquaresHistory] = useState([
     {
       squares: Array(Math.pow(boardSize, 2)).fill(null),
@@ -22,7 +26,7 @@ export default function Game() {
   // check only lines touching last played grid
   const vs = [[0,1],[1,0],[1,1],[1,-1]];  // "check directions"
   const N = boardSize;
-  const n = 5;  // match length
+  const n = winLength;  // match length
   const l = Math.min(n, N);  // var for unifying cases when n > N and n <= N
   const arrL = [...Array(l).keys()];  // shorthand for [0,...,l-1]
   function getWinPos() {
@@ -98,6 +102,24 @@ export default function Game() {
       );
     });
 
+  const changeBoardDim = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    const formJson = Object.fromEntries(formData.entries());
+    setBoardSize(formJson.boardSize);
+    setWinLength(formJson.winLength);
+    setViewStep(0);
+    setSquaresHistory([
+      {
+        squares: Array(Math.pow(formJson.boardSize, 2)).fill(null),
+        playedRow: -1,  // 1-based index
+        playedCol: -1
+      }
+    ]);
+    setXIsNext(true);
+  }
+
   return (
     <div className="flex-row">
       <div className="flex-column-wrap">
@@ -105,16 +127,30 @@ export default function Game() {
           style={{
             width: boardWidth,
             height: boardWidth,
+            gridTemplateColumns: `repeat(${boardSize}, 1fr)`,
+            gridTemplateRows: `repeat(${boardSize}, 1fr)`,
           }}
         >
           <Board
-            boardSize={boardSize}
-            relativeSize={relativeSize}
             squares={curSquares()}
             whenSquareClicked={fillSquare}
+            fontSize={fontSize}
           />
         </div>
-        <div className="status-line">{getStatus()}</div>
+        <div>
+          <div className="status-line">{getStatus()}</div>
+          <form onSubmit={changeBoardDim} className="game-form">
+            <label>
+              Taille du tableau :
+              <input type="number" name="boardSize" defaultValue={boardSize} min={0} max={100} />
+            </label>
+            <label>
+              Longueur pour gagner :
+              <input type="number" name="winLength" defaultValue={winLength} min={0} max={100} />
+            </label>
+            <input type="submit" value="Envoyer" />
+          </form>
+        </div>
       </div>
       <div>
         <ol start={0}>
